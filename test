@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Put the SpecTester on the classpath to reduce compile times
+# Uncomment the rm -- lines to clean up .class output after compiling.
+# Exit 1 if tests fail - exit 0 if tests pass.
+CP=".:store"
+# Change names as needed
+# Compile specification tests first
+javac -cp "$CP" StudentClass.java SpecificationTest.java
+logSpecTest=$(java SpecificationTest 2>&1)
+exitSpecTest=$?
+if [ $exitSpecTest -ne 0 ]; then
+  echo "$logSpecTest"
+#  rm -- *.class
+  exit 1
+fi
+javac -cp "$CP" UnitTest.java
+# Let the output through (so the controller can capture it)
+java UnitTest 2>&1
+exitCode=$?
+#rm -- *.class
+exit $exitCode
